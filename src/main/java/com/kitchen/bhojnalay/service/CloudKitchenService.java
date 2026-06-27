@@ -2,7 +2,9 @@ package com.kitchen.bhojnalay.service;
 
 import java.util.List;
 
+import com.kitchen.bhojnalay.dto.CloudKitchenDeliveryBoyResponseDto;
 import com.kitchen.bhojnalay.dto.CloudKitchenManagerResponseDto;
+import com.kitchen.bhojnalay.dto.CloudKitchenStaffResponseDto;
 import com.kitchen.bhojnalay.entity.CloudKitchen;
 
 
@@ -21,4 +23,7 @@ public interface CloudKitchenService {
     List<CloudKitchenManagerResponseDto> getKitchensWithManagers();
 
 	//List<CloudKitchenManagerResponseDto> getKitchensWithManagers();
+    List<CloudKitchenDeliveryBoyResponseDto> getKitchensWithDeliveryBoys();
+    
+    List<CloudKitchenStaffResponseDto> getKitchensWithStaff();
 }

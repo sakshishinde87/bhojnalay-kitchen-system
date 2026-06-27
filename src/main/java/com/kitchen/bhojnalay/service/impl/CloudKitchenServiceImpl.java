@@ -1,7 +1,11 @@
 package com.kitchen.bhojnalay.service.impl;
 
 import java.util.List;
+import java.util.Optional;
+
+import com.kitchen.bhojnalay.dto.CloudKitchenDeliveryBoyResponseDto;
 import com.kitchen.bhojnalay.dto.CloudKitchenManagerResponseDto;
+import com.kitchen.bhojnalay.dto.CloudKitchenStaffResponseDto;
 
 import org.springframework.stereotype.Service;
 
@@ -91,21 +95,13 @@ this.userRepository = userRepository;
     @Override
     public void deleteCloudKitchen(String cloudKitchenId) {
 
-        CloudKitchen existing =
-                getCloudKitchenById(cloudKitchenId);
-//
-//        // Check if any manager/user is assigned
-//        if (userRepository.existsByCloudKitchen_CloudKitchenId(cloudKitchenId)) {
-//            throw new RuntimeException(
-//                    "Cannot delete Cloud Kitchen because manager is assigned");
-//        }
-        
+        CloudKitchen existing = getCloudKitchenById(cloudKitchenId);
+
         List<User> assignedUsers =
                 userRepository.findByCloudKitchen_CloudKitchenId(cloudKitchenId);
 
         for (User user : assignedUsers) {
-            user.setCloudKitchen(null);
-            userRepository.save(user);
+            userRepository.delete(user);
         }
 
         cloudKitchenRepository.delete(existing);
@@ -132,4 +128,55 @@ this.userRepository = userRepository;
                 .toList();
     }
     
+    @Override
+    public List<CloudKitchenDeliveryBoyResponseDto> getKitchensWithDeliveryBoys() {
+
+        List<CloudKitchen> kitchens = cloudKitchenRepository.findAll();
+
+        return kitchens.stream()
+                .map(kitchen -> {
+
+                    List<User> deliveryBoys =
+                            userRepository.findAllByCloudKitchen_CloudKitchenIdAndRole(
+                                    kitchen.getCloudKitchenId(),
+                                    Role.DELIVERY_BOY
+                            );
+
+                    return new CloudKitchenDeliveryBoyResponseDto(
+                            kitchen,
+                            deliveryBoys
+                    );
+
+                })
+                .toList();
+    }
+    
+    @Override
+    public List<CloudKitchenStaffResponseDto> getKitchensWithStaff() {
+
+        List<CloudKitchen> kitchens = cloudKitchenRepository.findAll();
+
+        return kitchens.stream()
+                .map(kitchen -> {
+
+                    User manager = userRepository
+                            .findByCloudKitchen_CloudKitchenIdAndRole(
+                                    kitchen.getCloudKitchenId(),
+                                    Role.MANAGER)
+                            .orElse(null);
+
+                    List<User> deliveryBoys = userRepository
+                            .findAllByCloudKitchen_CloudKitchenIdAndRole(
+                                    kitchen.getCloudKitchenId(),
+                                    Role.DELIVERY_BOY);
+
+                    return new CloudKitchenStaffResponseDto(
+                            kitchen,
+                            manager,
+                            deliveryBoys
+                    );
+
+                })
+                .toList();
+    }
 }

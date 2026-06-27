@@ -24,5 +24,10 @@ public interface UserRepository extends JpaRepository<User, Long> {
     
     List<User> findByCloudKitchen_CloudKitchenId(String cloudKitchenId);
 
-	
+ 
+    
+    List<User> findAllByCloudKitchen_CloudKitchenIdAndRole(
+            String cloudKitchenId,
+            Role role
+    );
 }

@@ -4,7 +4,9 @@ import java.util.List;
 
 import org.springframework.web.bind.annotation.*;
 
+import com.kitchen.bhojnalay.dto.CloudKitchenDeliveryBoyResponseDto;
 import com.kitchen.bhojnalay.dto.CloudKitchenManagerResponseDto;
+import com.kitchen.bhojnalay.dto.CloudKitchenStaffResponseDto;
 import com.kitchen.bhojnalay.entity.CloudKitchen;
 import com.kitchen.bhojnalay.service.CloudKitchenService;
 
@@ -50,5 +52,14 @@ public class CloudKitchenController {
     @GetMapping("/with-managers")
     public List<CloudKitchenManagerResponseDto> getKitchensWithManagers() {
         return cloudKitchenService.getKitchensWithManagers();
+    }
+    @GetMapping("/with-delivery-boys")
+    public List<CloudKitchenDeliveryBoyResponseDto> getKitchensWithDeliveryBoys() {
+        return cloudKitchenService.getKitchensWithDeliveryBoys();
+    }
+    
+    @GetMapping("/with-staff")
+    public List<CloudKitchenStaffResponseDto> getKitchensWithStaff() {
+        return cloudKitchenService.getKitchensWithStaff();
     }
 }
